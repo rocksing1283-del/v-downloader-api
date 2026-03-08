@@ -9,7 +9,7 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return "Tony Jamer Stark Backend API - Engine Online (Force Download Active)"
+    return "Tony Jamer Stark Backend API - Engine Online (Ultra Bypass V3 Active)"
 
 @app.route('/api/extract', methods=['GET'])
 def extract_info():
@@ -17,17 +17,18 @@ def extract_info():
     if not url:
         return jsonify({"success": False, "error": "URL missing"}), 400
 
-    # ULTRA-BYPASS SETTINGS FOR YOUTUBE & IG
+    # 🔥 V3 ULTRA-BYPASS: 'tv' aur 'web_embedded' client bot protection bypass karte hain
     ydl_opts = {
         'format': 'best',
         'quiet': True,
         'skip_download': True,
         'no_warnings': True,
+        'nocheckcertificate': True,
         'extractor_args': {
-            'youtube': ['player_client=ios,android,web'] # Fake Mobile Request
+            'youtube': ['player_client=tv,web_embedded'] 
         },
         'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
         }
     }
 
@@ -35,15 +36,12 @@ def extract_info():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            # Title Fix
             title = info.get('title', 'Tony_Jamer_Stark_Media')
             
-            # Instagram Thumbnail Fix (Array se nikalna)
             thumbnail = info.get('thumbnail')
             if not thumbnail and info.get('thumbnails'):
-                thumbnail = info['thumbnails'][-1].get('url', '') # Best quality pic
+                thumbnail = info['thumbnails'][-1].get('url', '')
             
-            # Direct MP4 Link Fix
             direct_url = info.get('url')
             if not direct_url and info.get('formats'):
                 direct_url = info['formats'][-1].get('url')
@@ -57,20 +55,20 @@ def extract_info():
                 }
             })
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        # Error ko clean karna taaki padhne me aasan ho
+        error_msg = str(e)
+        if "Sign in" in error_msg:
+            error_msg = "YouTube ne server ko block kar diya hai (Bot Protection). Kripya koi doosra link try karein."
+        return jsonify({"success": False, "error": error_msg}), 500
 
-# NEW: YE VIDEO KO DIRECT DOWNLOAD KARWAYEGA BINA PLAY KIYE
 @app.route('/api/download')
 def download_file():
     file_url = request.args.get('url')
     title = request.args.get('title', 'Video')
-    
-    # Filename se faltu character hatana taaki error na aaye
     safe_title = re.sub(r'[^\w\-_\. ]', '_', title) + '.mp4'
 
     try:
         req = requests.get(file_url, stream=True, timeout=15)
-        # Content-Disposition hi wo magic hai jo browser ko force karta hai download ke liye
         return Response(
             stream_with_context(req.iter_content(chunk_size=1024*1024)),
             content_type=req.headers.get('content-type', 'video/mp4'),
