@@ -9,29 +9,31 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return "Tony Jamer Stark API - Ultra Bypass Engine V4 Online"
+    return "Tony Jamer Stark API - Ultra Stable Engine V5 Online"
 
 @app.route('/api/extract', methods=['GET'])
 def extract_info():
     url = request.args.get('url')
     if not url:
-        return jsonify({"success": False, "error": "URL missing"}), 400
+        return jsonify({"success": False, "error": "Bhai, URL missing hai."}), 400
 
-    # 🔥 THE MASTER BYPASS: 'impersonate' YouTube ko dhoka dega ki ye Chrome Browser hai
+    # 🔥 STABLE BYPASS: Smart TV aur Mobile Web ka combo (Bina kisi extra heavy tool ke)
     ydl_opts = {
         'format': 'best',
         'quiet': True,
         'skip_download': True,
         'no_warnings': True,
         'nocheckcertificate': True,
-        'impersonate': 'chrome' 
+        'extractor_args': {
+            'youtube': ['player_client=tv,mweb'] 
+        }
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            title = info.get('title', 'Video_Media')
+            title = info.get('title', 'Tony_Jamer_Stark_Media')
             
             thumbnail = info.get('thumbnail')
             if not thumbnail and info.get('thumbnails'):
@@ -42,7 +44,7 @@ def extract_info():
                 direct_url = info['formats'][-1].get('url')
 
             if not direct_url:
-                return jsonify({"success": False, "error": "Direct URL nahi mil paya. Video protected hai."}), 500
+                return jsonify({"success": False, "error": "Direct URL nikal nahi paya. Video protected ho sakti hai."}), 500
 
             return jsonify({
                 "success": True,
@@ -53,9 +55,14 @@ def extract_info():
                 }
             })
     except Exception as e:
+        # Error blank aane ki problem fix
         error_msg = str(e)
-        if "Sign in" in error_msg:
-            error_msg = "YouTube Bot Protection abhi bhi active hai. Kripya koi doosra link try karein ya 5 min wait karein."
+        if not error_msg.strip():
+            error_msg = repr(e) # Agar blank hua toh system code utha lega
+            
+        if "Sign in" in error_msg or "bot" in error_msg.lower():
+            error_msg = "YouTube Bot Protection System block kar raha hai. Render ka server pakda gaya."
+            
         return jsonify({"success": False, "error": error_msg}), 500
 
 @app.route('/api/download')
