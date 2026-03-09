@@ -1,5 +1,6 @@
 Flask==3.0.0
 flask-cors==4.0.0
-yt-dlp
-gunicorn==21.2.0
 requests==2.31.0
+gunicorn==21.2.0
+curl_cffi==0.5.10
+yt-dlp @ git+https://github.com/yt-dlp/yt-dlp.git@master
